@@ -34,7 +34,6 @@ export function isReferenced(node: Object, parent: Object): boolean {
     // yes: NODE::callee
     case "BindExpression":
       return parent.object === node || parent.callee === node;
-
     // yes: PARENT[NODE]
     // yes: NODE.child
     // no: parent.NODE
@@ -47,12 +46,10 @@ export function isReferenced(node: Object, parent: Object): boolean {
       } else {
         return false;
       }
-
     // no: new.NODE
     // no: NODE.target
     case "MetaProperty":
       return false;
-
     // yes: { [NODE]: "" }
     // yes: { NODE }
     // no: { NODE: "" }
@@ -60,12 +57,10 @@ export function isReferenced(node: Object, parent: Object): boolean {
       if (parent.key === node) {
         return parent.computed;
       }
-
     // no: let NODE = init;
     // yes: let id = NODE;
     case "VariableDeclarator":
       return parent.id !== node;
-
     // no: function NODE() {}
     // no: function foo(NODE) {}
     case "ArrowFunctionExpression":
@@ -76,7 +71,6 @@ export function isReferenced(node: Object, parent: Object): boolean {
       }
 
       return parent.id !== node;
-
     // no: export { foo as NODE };
     // yes: export { NODE as foo };
     // no: export { NODE as foo } from "foo";
@@ -86,17 +80,14 @@ export function isReferenced(node: Object, parent: Object): boolean {
       } else {
         return parent.local === node;
       }
-
     // no: export NODE from "foo";
     // no: export * as NODE from "foo";
     case "ExportNamespaceSpecifier":
     case "ExportDefaultSpecifier":
       return false;
-
     // no: <div NODE="foo" />
     case "JSXAttribute":
       return parent.name !== node;
-
     // no: class { NODE = value; }
     // yes: class { [NODE] = value; }
     // yes: class { key = NODE; }
@@ -106,7 +97,6 @@ export function isReferenced(node: Object, parent: Object): boolean {
       } else {
         return parent.value === node;
       }
-
     // no: import NODE from "foo";
     // no: import * as NODE from "foo";
     // no: import { NODE as foo } from "foo";
@@ -116,39 +106,31 @@ export function isReferenced(node: Object, parent: Object): boolean {
     case "ImportNamespaceSpecifier":
     case "ImportSpecifier":
       return false;
-
     // no: class NODE {}
     case "ClassDeclaration":
     case "ClassExpression":
       return parent.id !== node;
-
     // yes: class { [NODE]() {} }
     case "ClassMethod":
     case "ObjectMethod":
       return parent.key === node && parent.computed;
-
     // no: NODE: for (;;) {}
     case "LabeledStatement":
       return false;
-
     // no: try {} catch (NODE) {}
     case "CatchClause":
       return parent.param !== node;
-
     // no: function foo(...NODE) {}
     case "RestElement":
       return false;
-
     // yes: left = NODE;
     // no: NODE = right;
     case "AssignmentExpression":
       return parent.right === node;
-
     // no: [NODE = foo] = [];
     // yes: [foo = NODE] = [];
     case "AssignmentPattern":
       return parent.right === node;
-
     // no: [NODE] = [];
     // no: ({ NODE }) = [];
     case "ObjectPattern":
@@ -165,7 +147,10 @@ export function isReferenced(node: Object, parent: Object): boolean {
  */
 
 export function isValidIdentifier(name: string): boolean {
-  if (typeof name !== "string" || esutils.keyword.isReservedWordES6(name, true)) {
+  if (
+    typeof name !== "string" ||
+    esutils.keyword.isReservedWordES6(name, true)
+  ) {
     return false;
   } else if (name === "await") {
     // invalid in module, valid in script; better be safe (see #4952)
@@ -180,7 +165,10 @@ export function isValidIdentifier(name: string): boolean {
  */
 
 export function isLet(node: Object): boolean {
-  return t.isVariableDeclaration(node) && (node.kind !== "var" || node[BLOCK_SCOPED_SYMBOL]);
+  return (
+    t.isVariableDeclaration(node) &&
+    (node.kind !== "var" || node[BLOCK_SCOPED_SYMBOL])
+  );
 }
 
 /**
@@ -188,7 +176,9 @@ export function isLet(node: Object): boolean {
  */
 
 export function isBlockScoped(node: Object): boolean {
-  return t.isFunctionDeclaration(node) || t.isClassDeclaration(node) || t.isLet(node);
+  return (
+    t.isFunctionDeclaration(node) || t.isClassDeclaration(node) || t.isLet(node)
+  );
 }
 
 /**
@@ -196,7 +186,9 @@ export function isBlockScoped(node: Object): boolean {
  */
 
 export function isVar(node: Object): boolean {
-  return t.isVariableDeclaration(node, { kind: "var" }) && !node[BLOCK_SCOPED_SYMBOL];
+  return (
+    t.isVariableDeclaration(node, { kind: "var" }) && !node[BLOCK_SCOPED_SYMBOL]
+  );
 }
 
 /**
@@ -204,8 +196,12 @@ export function isVar(node: Object): boolean {
  */
 
 export function isSpecifierDefault(specifier: Object): boolean {
-  return t.isImportDefaultSpecifier(specifier) ||
-         t.isIdentifier(specifier.imported || specifier.exported, { name: "default" });
+  return (
+    t.isImportDefaultSpecifier(specifier) ||
+    t.isIdentifier(specifier.imported || specifier.exported, {
+      name: "default",
+    })
+  );
 }
 
 /**
@@ -245,7 +241,12 @@ export function isImmutable(node: Object): boolean {
  */
 
 export function isNodesEquivalent(a, b) {
-  if (typeof a !== "object" || typeof a !== "object" || a == null || b == null) {
+  if (
+    typeof a !== "object" ||
+    typeof a !== "object" ||
+    a == null ||
+    b == null
+  ) {
     return a === b;
   }
 

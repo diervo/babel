@@ -107,6 +107,10 @@ export function isReferenced(node: Object, parent: Object): boolean {
         return parent.value === node;
       }
 
+    // yes: class { #key = value }
+    case "ClassPrivateProperty":
+      return true;
+
     // no: import NODE from "foo";
     // no: import * as NODE from "foo";
     // no: import { NODE as foo } from "foo";

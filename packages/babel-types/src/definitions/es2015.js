@@ -59,7 +59,7 @@ defineType("ClassBody", {
   visitor: ["body"],
   fields: {
     body: {
-      validate: chain(assertValueType("array"), assertEach(assertNodeType("ClassMethod", "ClassProperty"))),
+      validate: chain(assertValueType("array"), assertEach(assertNodeType("ClassMethod", "ClassProperty", "ClassPrivateProperty"))),
     },
   },
 });

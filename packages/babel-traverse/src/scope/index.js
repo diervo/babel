@@ -589,6 +589,8 @@ export default class Scope {
     } else if (t.isClassProperty(node) || t.isObjectProperty(node)) {
       if (node.computed && !this.isPure(node.key, constantsOnly)) return false;
       return this.isPure(node.value, constantsOnly);
+    } else if (t.isClassPrivateProperty(node)) {
+      return this.isPure(node.name, constantsOnly);
     } else if (t.isUnaryExpression(node)) {
       return this.isPure(node.argument, constantsOnly);
     } else {

@@ -55,6 +55,17 @@ defineType("ClassProperty", {
   },
 });
 
+defineType("ClassPrivateProperty", {
+  visitor: ["key", "value", "typeAnnotation", "decorators"],
+  builder: ["key", "value", "typeAnnotation", "decorators"],
+  aliases: ["Property"],
+  fields: {
+    key: {
+      validate: assertValueType("Identifier"),
+    },
+  },
+});
+
 defineType("DeclareClass", {
   visitor: ["id", "typeParameters", "extends", "body"],
   aliases: ["Flow", "FlowDeclaration", "Statement", "Declaration"],

@@ -32,6 +32,17 @@ defineType("Decorator", {
   },
 });
 
+defineType("PrivateName", {
+  builder: ["name"],
+  visitor: ["typeAnnotation", "name"],
+  aliases: ["Expression", "LVal"],
+  fields: {
+    name: {
+      validate: assertNodeType("Identifier"),
+    },
+  },
+});
+
 defineType("DoExpression", {
   visitor: ["body"],
   aliases: ["Expression"],

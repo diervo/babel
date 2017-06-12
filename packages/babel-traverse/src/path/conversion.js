@@ -91,10 +91,12 @@ export function arrowFunctionToExpression({
  */
 function hoistFunctionEnvironment(fnPath, specCompliant = false, allowInsertArrow = true) {
   const thisEnvFn = fnPath.findParent(
-    (p) => (p.isFunction() && !p.isArrowFunctionExpression()) || p.isProgram() || p.isClassProperty());
+    (p) => (p.isFunction() && !p.isArrowFunctionExpression()) || p.isProgram() ||
+    p.isClassProperty() || p.isClassPrivateProperty());
+
   const inConstructor = thisEnvFn && thisEnvFn.node.kind === "constructor";
 
-  if (thisEnvFn.isClassProperty()) {
+  if (thisEnvFn.isClassProperty() || thisEnvFn.isClassPrivateProperty()) {
     throw fnPath.buildCodeFrameError("Unable to transform arrow inside class property");
   }
 
@@ -115,7 +117,9 @@ function hoistFunctionEnvironment(fnPath, specCompliant = false, allowInsertArro
     const allSuperCalls = [];
     thisEnvFn.traverse({
       Function: (child) => {
-        if (child.isArrowFunctionExpression() || child.isClassProperty() || child === fnPath) return;
+        if (child.isArrowFunctionExpression() ||
+          child.isClassProperty() || this.isClassPrivateProperty() ||
+          child === fnPath) return;
         child.skip();
       },
       CallExpression(child) {
@@ -414,7 +418,10 @@ function getScopeInformation(fnPath) {
 
   fnPath.traverse({
     Function(child) {
-      if (child.isArrowFunctionExpression() || child.isClassProperty()) return;
+      if (child.isArrowFunctionExpression() ||
+        child.isClassProperty() ||
+        child.isClassPrivateProperty()) return;
+
       child.skip();
     },
     ThisExpression(child) {
